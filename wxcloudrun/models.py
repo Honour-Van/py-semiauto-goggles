@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.db import models
 
@@ -15,3 +15,17 @@ class Counters(models.Model):
 
     class Meta:
         db_table = 'Counters'  # 数据库表名
+
+
+class Position(models.Model):
+    id = models.AutoField
+    latitude = models.DecimalField(max_length=7, decimal_places=5)
+    longitude = models.DecimalField(max_length=8, decimal_places=5) # 考虑到北京的经度在116左右，所以多一位
+    date = models.DateField(default=date.today())
+    timestamp = models.DateTimeField(default=datetime.now())
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'Position'

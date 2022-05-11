@@ -18,6 +18,9 @@ from wxcloudrun import views
 from django.conf.urls import url
 
 urlpatterns = (
+    # 位置服务接口
+    url(r'^^api/position(/)?$', views.position),
+
     # 计数器接口
     url(r'^^api/count(/)?$', views.counter),
 
