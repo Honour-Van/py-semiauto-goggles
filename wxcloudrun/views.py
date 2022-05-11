@@ -4,7 +4,7 @@ import logging
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Avg
-from django.db.utils import timezone
+from django.utils import timezone
 from wxcloudrun.models import Counters
 from wxcloudrun.models import Position
 
