@@ -1,10 +1,10 @@
-from datetime import date
 import json
 import logging
 
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Avg
+from django.db.utils import timezone
 from wxcloudrun.models import Counters
 from wxcloudrun.models import Position
 
@@ -117,7 +117,7 @@ def get_position():
     """
 
     try:
-        data = Position.objects.filter(date=date.today()).order_by('-id')
+        data = Position.objects.filter(date=timezone.now()).order_by('-id')
 
         # TODO 滤波算法还需优化
         possible_record_num = 0
