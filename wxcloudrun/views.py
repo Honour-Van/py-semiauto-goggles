@@ -117,7 +117,7 @@ def get_position():
     """
     latitude, longitude = 39.9086, 116.3974
     try:
-        data = Position.objects.get(id=1)
+        data = Position.objects.get_or_create(id=1)
         latitude = data.latitude
         longitude = data.longitude
     #     data = Position.objects.filter(date=timezone.now()).order_by('-id')
@@ -158,7 +158,7 @@ def update_position(request):
                             json_dumps_params={'ensure_ascii': False})
 
     try:
-        Position.objects.get(id=1).update(longitude=body['longitude'], latitude=body['latitude'])
+        Position.objects.get_or_create(id=1).update(longitude=body['longitude'], latitude=body['latitude'])
         return JsonResponse({'code': 0, "data": {'longitude':body['longitude'], 'latitude':body['latitude']}},
                     json_dumps_params={'ensure_ascii': False})
     except Exception('Django Error during db saving'):
