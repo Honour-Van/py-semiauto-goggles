@@ -116,7 +116,10 @@ def get_position():
     获取当前位置
     """
     latitude, longitude = 39.9086, 116.3974
-    # try:
+    try:
+        data = Position.objects.get(id=1)
+        latitude = data.latitude
+        longitude = data.longitude
     #     data = Position.objects.filter(date=timezone.now()).order_by('-id')
 
     #     # TODO 滤波算法还需优化
@@ -131,9 +134,9 @@ def get_position():
     #     longitude = data.aggregate(Avg('longitude'))
     #     latitude = data.aggregate(Avg('latitude'))
 
-    # except Position.DoesNotExist:
-    #     return JsonResponse({'code': 0, 'data': 0},
-    #                 json_dumps_params={'ensure_ascii': False})
+    except Position.DoesNotExist:
+        return JsonResponse({'code': 0, 'data': 0},
+                    json_dumps_params={'ensure_ascii': False})
     return JsonResponse({'code': 0, 'data': {'longitude':longitude, 'latitude':latitude}},
                         json_dumps_params={'ensure_ascii': False})
 
@@ -155,11 +158,8 @@ def update_position(request):
                             json_dumps_params={'ensure_ascii': False})
 
     try:
-        data = Position()
-        data.longitude = body['longitude']
-        data.latitude = body['latitude']
-        data.save()
-        return JsonResponse({'code': 0, "data": {'longitude':data.longitude, 'latitude':data.latitude}},
+        Position.objects.get(id=1).update(longitude=body['longitude'], latitude=body['latitude'])
+        return JsonResponse({'code': 0, "data": {'longitude':body['longitude'], 'latitude':body['latitude']}},
                     json_dumps_params={'ensure_ascii': False})
     except Exception('Django Error during db saving'):
         logger.warning('数据插入数据库时出错')
