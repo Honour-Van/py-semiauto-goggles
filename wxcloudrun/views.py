@@ -115,25 +115,25 @@ def get_position():
     """
     获取当前位置
     """
+    latitude, longitude = 39.9086, 116.3974
+    # try:
+    #     data = Position.objects.filter(date=timezone.now()).order_by('-id')
 
-    try:
-        data = Position.objects.filter(date=timezone.now()).order_by('-id')
+    #     # TODO 滤波算法还需优化
+    #     possible_record_num = 0
+    #     basela = data[0].latitude
+    #     baselo = data[0].longitude
+    #     for record in data:
+    #         if record.latitude - basela > 2e-4 or record.longitude - baselo > 2e-4:
+    #             break
+    #         possible_record_num += 1
+    #     data = data[:possible_record_num]
+    #     longitude = data.aggregate(Avg('longitude'))
+    #     latitude = data.aggregate(Avg('latitude'))
 
-        # TODO 滤波算法还需优化
-        possible_record_num = 0
-        basela = data[0].latitude
-        baselo = data[0].longitude
-        for record in data:
-            if record.latitude - basela > 2e-4 or record.longitude - baselo > 2e-4:
-                break
-            possible_record_num += 1
-        data = data[:possible_record_num]
-        longitude = data.aggregate(Avg('longitude'))
-        latitude = data.aggregate(Avg('latitude'))
-
-    except Position.DoesNotExist:
-        return JsonResponse({'code': 0, 'data': 0},
-                    json_dumps_params={'ensure_ascii': False})
+    # except Position.DoesNotExist:
+    #     return JsonResponse({'code': 0, 'data': 0},
+    #                 json_dumps_params={'ensure_ascii': False})
     return JsonResponse({'code': 0, 'data': {'longitude':longitude, 'latitude':latitude}},
                         json_dumps_params={'ensure_ascii': False})
 
