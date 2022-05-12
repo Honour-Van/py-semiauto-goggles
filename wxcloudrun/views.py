@@ -124,7 +124,7 @@ def get_position():
     except Position.DoesNotExist:
         return JsonResponse({'code': 0, 'data': 0},
                     json_dumps_params={'ensure_ascii': False})
-    return JsonResponse({'code': 0, 'data': data}, # {'longitude':longitude, 'latitude':latitude}
+    return JsonResponse({'code': 0, 'data': {'longitude':longitude, 'latitude':latitude}},
                         json_dumps_params={'ensure_ascii': False})
 
 
