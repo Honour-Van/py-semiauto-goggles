@@ -120,7 +120,6 @@ def get_position():
         data, created = Position.objects.get_or_create(id=1)
         latitude = data.latitude
         longitude = data.longitude
-        logger.log('data retrived: {}' % data)
 
     except Position.DoesNotExist:
         return JsonResponse({'code': 0, 'data': 0},
