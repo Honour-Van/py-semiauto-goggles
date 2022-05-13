@@ -1,6 +1,5 @@
 import json
 import logging
-from turtle import update
 
 from django.http import JsonResponse
 from django.shortcuts import render
