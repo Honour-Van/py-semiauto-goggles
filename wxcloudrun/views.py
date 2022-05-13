@@ -1,12 +1,8 @@
 import json
 import logging
-from urllib import response
 
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.db.models import Avg
-from django.utils import timezone
-from sqlalchemy import func
 from wxcloudrun.models import Counters
 from wxcloudrun.models import Position
 
