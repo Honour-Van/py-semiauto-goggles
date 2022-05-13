@@ -22,7 +22,7 @@ class Position(models.Model):
     latitude = models.DecimalField(max_length=7, decimal_places=5, max_digits=12, default=0)
     longitude = models.DecimalField(max_length=8, decimal_places=5, max_digits=13, default=0) # 考虑到北京的经度在116左右，所以多一位
     # date = models.DateField(default=timezone.now)
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
