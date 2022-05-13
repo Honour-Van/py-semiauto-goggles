@@ -18,7 +18,7 @@ from wxcloudrun import views
 from django.conf.urls import url
 
 urlpatterns = (
-    # 位置服务接口
+    # 蜂鸣器唤醒接口
     url(r'^^api/buzz(/)?$', views.buzz),
 
     # 位置服务接口
