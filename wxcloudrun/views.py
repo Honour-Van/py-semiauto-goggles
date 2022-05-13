@@ -9,7 +9,6 @@ from wxcloudrun.models import Counters
 from wxcloudrun.models import Position
 
 logger = logging.getLogger('log')
-logger.setLevel(logging.DEBUG)
 
 def index(request, _):
     """
@@ -135,7 +134,7 @@ def update_position(request):
     `` request `` 请求对象
     """
 
-    logger.log('update_position req: {}'.format(request.body))
+    logger.debug('update_position req: {}'.format(request.body))
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
