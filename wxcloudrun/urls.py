@@ -19,6 +19,9 @@ from django.conf.urls import url
 
 urlpatterns = (
     # 位置服务接口
+    url(r'^^api/buzz(/)?$', views.buzz),
+
+    # 位置服务接口
     url(r'^^api/position(/)?$', views.position),
 
     # 计数器接口

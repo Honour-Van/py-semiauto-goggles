@@ -9,6 +9,7 @@ from wxcloudrun.models import Counters
 from wxcloudrun.models import Position
 
 logger = logging.getLogger('log')
+logger.setLevel(logging.DEBUG)
 
 def index(request, _):
     """
@@ -151,3 +152,51 @@ def update_position(request):
         logger.warning('数据插入数据库时出错')
         return JsonResponse({'code': -1, 'errorMsg': '数据插入数据库时出错'},
                     json_dumps_params={'ensure_ascii': False})
+
+
+def buzz(request, _):
+    """
+    
+
+     `` request `` 请求对象
+    """
+    rsp = JsonResponse({'code': 0, 'errorMsg': ''}, json_dumps_params={'ensure_ascii': False})
+    if request.method == 'GET' or request.method == 'get':
+        rsp = get_buzz()
+    elif request.method == 'POST' or request.method == 'post':
+        rsp = update_buzz(request)
+    else:
+        rsp = JsonResponse({'code': -1, 'errorMsg': '请求方式错误'},
+                            json_dumps_params={'ensure_ascii': False})
+    logger.info('response result: {}'.format(rsp.content.decode('utf-8')))
+    return rsp
+
+
+def get_buzz():
+    # TODO 获取buzz状态，主要用于调试
+    return 'TODO'
+
+def update_buzz(request):
+    """
+    @Description:
+    小程序调用，触发
+    ---------
+    @Param:
+    `request` 请求对象
+    ---------
+    @Return:
+    `rsp` 响应对象
+    ---------
+    """
+    logger.debug('update_position req: {}'.format(request.body))
+    
+    print('buzzing')
+
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+
+    if 'action' not in body:
+        return JsonResponse({'code': -1, 'errorMsg': '缺少action参数'},
+                            json_dumps_params={'ensure_ascii': False})
+
+    return JsonResponse({'code': 0, 'data': 'buzzed'})
