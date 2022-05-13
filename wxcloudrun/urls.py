@@ -18,6 +18,9 @@ from wxcloudrun import views
 from django.conf.urls import url
 
 urlpatterns = (
+    # 反馈统计接口
+    url(r'^^api/feedback(/)?$', views.feedback),
+
     # 蜂鸣器唤醒接口
     url(r'^^api/buzz(/)?$', views.buzz),
 

@@ -1,10 +1,12 @@
 import json
 import logging
+from urllib import response
 
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Avg
 from django.utils import timezone
+from sqlalchemy import func
 from wxcloudrun.models import Counters
 from wxcloudrun.models import Position
 
@@ -40,13 +42,13 @@ def counter(request, _):
     return rsp
 
 
-def get_count():
+def get_count(request_id=1):
     """
     获取当前计数
     """
 
     try:
-        data = Counters.objects.get(id=1)
+        data = Counters.objects.get(id=request_id)
     except Counters.DoesNotExist:
         return JsonResponse({'code': 0, 'data': 0},
                     json_dumps_params={'ensure_ascii': False})
@@ -54,7 +56,7 @@ def get_count():
                         json_dumps_params={'ensure_ascii': False})
 
 
-def update_count(request):
+def update_count(request, request_id=1):
     """
     更新计数，自增或者清零
 
@@ -72,7 +74,7 @@ def update_count(request):
 
     if body['action'] == 'inc':
         try:
-            data = Counters.objects.get(id=1)
+            data = Counters.objects.get(id=request_id)
         except Counters.DoesNotExist:
             data = Counters()
         data.id = 1
@@ -82,7 +84,7 @@ def update_count(request):
                     json_dumps_params={'ensure_ascii': False})
     elif body['action'] == 'clear':
         try:
-            data = Counters.objects.get(id=1)
+            data = Counters.objects.get(id=request_id)
             data.delete()
         except Counters.DoesNotExist:
             logger.info('record not exist')
@@ -201,3 +203,24 @@ def update_buzz(request):
                             json_dumps_params={'ensure_ascii': False})
 
     return JsonResponse({'code': 0, 'data': 'buzzed'})
+
+
+def feedback(request, _):
+    """
+    @Description:
+    定位服务评价反馈接口
+    ---------
+    @Param:
+    request 请求对象
+    -------
+    """
+    rsp = JsonResponse({'code': 0, 'errorMsg': ''}, json_dumps_params={'ensure_ascii': False})
+    if request.method == 'GET' or request.method == 'get':
+        rsp = get_count(request_id=2)
+    elif request.method == 'POST' or request.method == 'post':
+        rsp = update_count(request, reuqest_id=2)
+    else:
+        rsp = JsonResponse({'code': -1, 'errorMsg': '请求方式错误'},
+                            json_dumps_params={'ensure_ascii': False})
+    logger.info('response result: {}'.format(rsp.content.decode('utf-8')))
+    return rsp
