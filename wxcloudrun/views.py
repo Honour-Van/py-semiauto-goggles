@@ -1,5 +1,6 @@
 import json
 import logging
+from turtle import update
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -38,13 +39,13 @@ def counter(request, _):
     return rsp
 
 
-def get_count(request_id=1):
+def get_count():
     """
     获取当前计数
     """
 
     try:
-        data = Counters.objects.get(id=request_id)
+        data = Counters.objects.get(id=1)
     except Counters.DoesNotExist:
         return JsonResponse({'code': 0, 'data': 0},
                     json_dumps_params={'ensure_ascii': False})
@@ -52,7 +53,7 @@ def get_count(request_id=1):
                         json_dumps_params={'ensure_ascii': False})
 
 
-def update_count(request, request_id=1):
+def update_count(request):
     """
     更新计数，自增或者清零
 
@@ -67,20 +68,22 @@ def update_count(request, request_id=1):
     if 'action' not in body:
         return JsonResponse({'code': -1, 'errorMsg': '缺少action参数'},
                             json_dumps_params={'ensure_ascii': False})
+    if 'id' not in body:
+        body['id'] = 1 # 如果没有给出id，说明是默认用于调试端口用的1号位
 
     if body['action'] == 'inc':
         try:
-            data = Counters.objects.get(id=request_id)
+            data = Counters.objects.get(id=body['id'])
         except Counters.DoesNotExist:
             data = Counters()
-        data.id = 1
+        data.id = body['id']
         data.count += 1
         data.save()
         return JsonResponse({'code': 0, "data": data.count},
                     json_dumps_params={'ensure_ascii': False})
     elif body['action'] == 'clear':
         try:
-            data = Counters.objects.get(id=request_id)
+            data = Counters.objects.get(id=body['id'])
             data.delete()
         except Counters.DoesNotExist:
             logger.info('record not exist')
@@ -212,11 +215,25 @@ def feedback(request, _):
     """
     rsp = JsonResponse({'code': 0, 'errorMsg': ''}, json_dumps_params={'ensure_ascii': False})
     if request.method == 'GET' or request.method == 'get':
-        rsp = get_count(2)
+        rsp = get_feedback()
     elif request.method == 'POST' or request.method == 'post':
-        rsp = update_count(request, 2)
+        request.update({'id':2})
+        rsp = update_count(request)
     else:
         rsp = JsonResponse({'code': -1, 'errorMsg': '请求方式错误'},
                             json_dumps_params={'ensure_ascii': False})
     logger.info('response result: {}'.format(rsp.content.decode('utf-8')))
     return rsp
+
+def get_feedback():
+    """
+    feedback的GET请求接口
+    """
+    try:
+        data = Counters.objects.get(id=2)
+    except Counters.DoesNotExist:
+        return JsonResponse({'code': 0, 'data': 0},
+                    json_dumps_params={'ensure_ascii': False})
+    return JsonResponse({'code': 0, 'data': data.count},
+                        json_dumps_params={'ensure_ascii': False})
+
