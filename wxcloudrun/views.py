@@ -146,6 +146,7 @@ def update_position(request):
 
     try:
         Position.objects.update_or_create(id=1, defaults={'longitude':body['longitude'], 'latitude':body['latitude']})
+        print('position updated as:', body['longitude'], body['latitude'])
         return JsonResponse({'code': 0, "data": {'longitude':body['longitude'], 'latitude':body['latitude']}},
                     json_dumps_params={'ensure_ascii': False})
     except Exception('Django Error during db saving'):
@@ -188,7 +189,7 @@ def update_buzz(request):
     `rsp` 响应对象
     ---------
     """
-    logger.debug('update_position req: {}'.format(request.body))
+    logger.debug('update_buzz req: {}'.format(request.body))
     
     print('buzzing')
 
