@@ -216,7 +216,6 @@ def feedback(request, _):
     if request.method == 'GET' or request.method == 'get':
         rsp = get_feedback()
     elif request.method == 'POST' or request.method == 'post':
-        request.update({'id':2})
         rsp = update_count(request)
     else:
         rsp = JsonResponse({'code': -1, 'errorMsg': '请求方式错误'},
