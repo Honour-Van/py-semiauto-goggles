@@ -172,10 +172,11 @@ def buzz(request, _):
     logger.info('response result: {}'.format(rsp.content.decode('utf-8')))
     return rsp
 
-
+buzz = 0 # 全局变量，用于记录当前buzz状态，表示蜂鸣器是否应当鸣响
 def get_buzz():
-    # TODO 获取buzz状态，主要用于调试
-    return 'TODO'
+    # 获取buzz状态
+    return JsonResponse({'code': 0, 'data': buzz},
+                        json_dumps_params={'ensure_ascii': False})
 
 def update_buzz(request):
     """
@@ -199,8 +200,16 @@ def update_buzz(request):
     if 'action' not in body:
         return JsonResponse({'code': -1, 'errorMsg': '缺少action参数'},
                             json_dumps_params={'ensure_ascii': False})
+    global buzz
+    if body['action'] == 'on':
+        buzz = 1
+    elif body['action'] == 'off':
+        buzz = 0
+    else:
+        return JsonResponse({'code': -1, 'errorMsg': 'action参数错误'},
+                            json_dumps_params={'ensure_ascii': False})
 
-    return JsonResponse({'code': 0, 'data': 'buzzed'})
+    return JsonResponse({'code': 0, 'data': body['action']})
 
 
 def feedback(request, _):
