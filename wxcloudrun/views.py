@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime, timedelta
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -172,10 +173,15 @@ def buzz(request, _):
     logger.info('response result: {}'.format(rsp.content.decode('utf-8')))
     return rsp
 
-buzz = 0 # 全局变量，用于记录当前buzz状态，表示蜂鸣器是否应当鸣响
+buzz_state = 0 # 全局变量，用于记录当前buzz状态，表示蜂鸣器是否应当鸣响
+last_call_time = datetime.now() # 全局变量，用于记录上一次蜂鸣器启动的时间
+
 def get_buzz():
     # 获取buzz状态
-    return JsonResponse({'code': 0, 'data': buzz},
+    global buzz_state
+    if buzz_state and datetime.now() - last_call_time > timedelta(seconds=15):
+        buzz_state = 0
+    return JsonResponse({'code': 0, 'data': buzz_state},
                         json_dumps_params={'ensure_ascii': False})
 
 def update_buzz(request):
@@ -200,11 +206,13 @@ def update_buzz(request):
     if 'action' not in body:
         return JsonResponse({'code': -1, 'errorMsg': '缺少action参数'},
                             json_dumps_params={'ensure_ascii': False})
-    global buzz
+    global buzz_state
+    global last_call_time
     if body['action'] == 'on':
-        buzz = 1
+        buzz_state = 1
+        last_call_time = datetime.now()
     elif body['action'] == 'off':
-        buzz = 0
+        buzz_state = 0
     else:
         return JsonResponse({'code': -1, 'errorMsg': 'action参数错误'},
                             json_dumps_params={'ensure_ascii': False})
