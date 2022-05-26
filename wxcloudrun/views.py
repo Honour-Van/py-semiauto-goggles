@@ -174,15 +174,16 @@ def buzz(request, _):
     return rsp
 
 buzz_state = 0 # 全局变量，用于记录当前buzz状态，表示蜂鸣器是否应当鸣响
-last_call_time = datetime.now() # 全局变量，用于记录上一次蜂鸣器启动的时间
 
 def get_buzz():
     # 获取buzz状态
     global buzz_state
-    if buzz_state and datetime.now() - last_call_time > timedelta(seconds=15):
+
+    ret_val = JsonResponse({'code': 0, 'data': buzz_state},
+                            json_dumps_params={'ensure_ascii': False})
+    if buzz_state:
         buzz_state = 0
-    return JsonResponse({'code': 0, 'data': buzz_state},
-                        json_dumps_params={'ensure_ascii': False})
+    return ret_val
 
 def update_buzz(request):
     """
@@ -207,10 +208,8 @@ def update_buzz(request):
         return JsonResponse({'code': -1, 'errorMsg': '缺少action参数'},
                             json_dumps_params={'ensure_ascii': False})
     global buzz_state
-    global last_call_time
     if body['action'] == 'on':
         buzz_state = 1
-        last_call_time = datetime.now()
     elif body['action'] == 'off':
         buzz_state = 0
     else:
